@@ -9,14 +9,20 @@ const signin = require('./controllers/signin');
 const profile = require('./controllers/profile');
 const image = require("./controllers/image");
 
+process.
+
 const db = knex({
   client: 'pg',
   connection: {
-    host : '127.0.0.1',
-    user : 'jpbernhardt',
-    password : '',
-    database : process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
   }
+  // connection: {
+  //   host : '127.0.0.1',
+  //   user : 'jpbernhardt',
+  //   password : '',
+  //   database : process.env.DATABASE_URL
+  // }
 });
 
 const app = express();
