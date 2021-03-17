@@ -15,7 +15,7 @@ const db = knex({
     host : '127.0.0.1',
     user : 'jpbernhardt',
     password : '',
-    database : 'facerecognitionDB'
+    database : process.env.DATABASE_URL
   }
 });
 
@@ -28,7 +28,20 @@ function getUserId(req) {
   return req.params.id;
 }
 
-app.get("/", (req, res) => { res.send('it is working') });
+app.get("/", (req, res) => { res.send('db.database.user') });
+app.get('/db', async (req, res) => {
+  try {
+    const client = await db.connect();
+    const result = await client.query('SELECT * FROM test_table');
+    const results = { 'results': (result) ? result.rows : null};
+    res.render('pages/db', results );
+    client.release();
+  } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+  }
+})
+
 app.post("/signin", (req, res) => { signin.handleSignin(req, res, db, bcrypt) });
 app.post("/register", (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.get("/profile/:id", (req, res) => { profile.handleProfileGet(req, res, db) });
